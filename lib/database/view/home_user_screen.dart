@@ -38,16 +38,40 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
         itemCount: userList.length,
         itemBuilder: (context, index) => Card(
           child: ListTile(
+            onLongPress: () async {
+              await DatabaseHelper()
+                  .updateUser(
+                      user: UserModel(
+                          id: userList[index].id,
+                          name: 'Rathana',
+                          salary: userList[index].salary))
+                  .whenComplete(
+                    () => getUserData(),
+                  );
+            },
             leading: Icon(Icons.person_pin_rounded),
             title: Text(userList[index].name!),
             subtitle: Text('\$ ${userList[index].salary!}'),
+            trailing: IconButton(
+                onPressed: () async {
+                  await DatabaseHelper()
+                      .deleteUser(id: userList[index].id!)
+                      .whenComplete(
+                        () => getUserData(),
+                      );
+                },
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                )),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
             await DatabaseHelper()
-                .insertUserData(user: UserModel(name: 'kanha', salary: 200.00));
+                .insertUserData(user: UserModel(name: 'kanha', salary: 200.00))
+                .whenComplete(() => getUserData());
           },
           label: Text('Add')),
     );

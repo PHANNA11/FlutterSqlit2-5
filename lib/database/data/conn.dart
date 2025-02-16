@@ -37,4 +37,17 @@ class DatabaseHelper {
     List<Map<String, dynamic>> result = await db.query(userTableName);
     return result.map((e) => UserModel.fromMap(data: e)).toList();
   }
+
+  // Delete data
+  Future<void> updateUser({required UserModel user}) async {
+    var db = await initDatabse();
+    await db.update(userTableName, user.toMap(),
+        where: '$uid=?', whereArgs: [user.id]);
+  }
+
+  // Update Data
+  Future<void> deleteUser({required int id}) async {
+    var db = await initDatabse();
+    await db.delete(userTableName, where: '$uid=?', whereArgs: [id]);
+  }
 }

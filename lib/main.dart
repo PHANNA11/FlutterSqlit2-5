@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_database/database/view/home_user_screen.dart';
-import 'package:flutter_database/cam&Map/google_map_screen.dart';
-import 'package:flutter_database/home_screen.dart';
-import 'package:flutter_database/cam&Map/image_screen.dart';
 
 void main() {
   runApp(const MyApp());
