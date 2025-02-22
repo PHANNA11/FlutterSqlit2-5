@@ -24,30 +24,48 @@ class DatabaseHelper {
   }
   // insert
 
-  Future<void> insertUserData({required UserModel user}) async {
+  Future<bool> insertUserData({required UserModel user}) async {
     var db = await initDatabse();
-    await db.insert(userTableName, user.toMap(isAdd: true));
-    log('Data inserted');
+    var status = await db.insert(userTableName, user.toMap(isAdd: true));
+
+    return status >= 1 ? true : false;
   }
 
   // read data
 
-  Future<List<UserModel>> getAllUser() async {
+  Future<List<UserModel>> getAllUser({int? filterBy}) async {
     var db = await initDatabse();
-    List<Map<String, dynamic>> result = await db.query(userTableName);
+    List<Map<String, dynamic>> result = await db.query(userTableName,
+        // columns: [uSalary],
+        orderBy: getFilterByValue(value: filterBy ?? 1));
     return result.map((e) => UserModel.fromMap(data: e)).toList();
   }
 
   // Delete data
-  Future<void> updateUser({required UserModel user}) async {
+  Future<bool> updateUser({required UserModel user}) async {
     var db = await initDatabse();
-    await db.update(userTableName, user.toMap(),
+    var status = await db.update(userTableName, user.toMap(),
         where: '$uid=?', whereArgs: [user.id]);
+    return status >= 1 ? true : false;
   }
 
   // Update Data
   Future<void> deleteUser({required int id}) async {
     var db = await initDatabse();
     await db.delete(userTableName, where: '$uid=?', whereArgs: [id]);
+  }
+
+  String? getFilterByValue({required int value}) {
+    switch (value) {
+      case 1:
+        return null;
+      case 2:
+        return '$uSalary DESC';
+      case 3:
+        return '$uName DESC';
+      case 4:
+        return '$uName ASC';
+    }
+    return null;
   }
 }
